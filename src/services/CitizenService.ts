@@ -8,6 +8,7 @@ import moment from 'moment';
 export class CitizenService {
   public url = 'mongodb://127.0.0.1:27017';
   public router = express.Router();
+  public ajusteEdad = 0;
 
   constructor(){
   }
@@ -31,7 +32,7 @@ export class CitizenService {
       if (req.query.ageMin || req.query.ageMax) {
         filteredCitizens = filteredCitizens.filter(citizen => {
           const birthdate = moment(citizen.birthdate, "MM/DD/YYYY");
-          const age = moment().diff(birthdate, "years");
+          const age = moment().diff(birthdate, "years")-this.ajusteEdad;
           if (req.query.ageMin && age < parseInt(req.query.ageMin.toString())) {
             return false;
           }
@@ -55,13 +56,13 @@ export class CitizenService {
       }
 
       // el apellido
-      let lastname = '';
-      if (req.query.lastname && typeof req.query.lastname === 'string') {
-        lastname = req.query.lastname.toLowerCase();
+      let lastName = '';
+      if (req.query.lastName && typeof req.query.lastName === 'string') {
+        lastName = req.query.lastName.toLowerCase();
       }
-      if (req.query.lastname) {
+      if (req.query.lastName) {
         filteredCitizens = filteredCitizens.filter(citizen => {
-          return citizen.lastname.toLowerCase().includes(lastname.toLowerCase());
+          return citizen.lastName.toLowerCase().includes(lastName.toLowerCase());
         });
       }
 
@@ -76,7 +77,7 @@ export class CitizenService {
       if (req.query.isAdult) {
         filteredCitizens = filteredCitizens.filter(citizen => {
           const birthdate = moment(citizen.birthdate, "MM/DD/YYYY");
-          const age = moment().diff(birthdate, "years");
+          const age = moment().diff(birthdate, "years")-this.ajusteEdad;
     
           return age >= 18 === (req.query.isAdult === "true");
         });
