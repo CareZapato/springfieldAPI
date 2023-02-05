@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+//modelo que representa nuestro objeto de mongo
 const characterSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String, required: true },

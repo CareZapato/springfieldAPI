@@ -19,6 +19,7 @@
   "homepage": "https://github.com/CareZapato/springfieldAPI#readme",
   "dependencies": {
     "@types/node": "^18.11.18",
+    "body-parser": "^1.20.1",
     "express": "^4.18.2",
     "http-mocks": "^1.3.2",
     "moment": "^2.29.4",
