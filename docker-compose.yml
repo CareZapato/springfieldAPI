@@ -1,17 +1,11 @@
-version: "2"
+version: "3"
 
 services:
-
-  web:
-    build: .
-    volumes:
-      - ./:/app
-    ports:
-      - 3030:3030
-    links:
-      - mongo
-
-  mongo:
-    image: mongo
-    ports:
-      - 27017:27017
+api:
+build: .
+ports:
+  - "3030:3030"
+mongo:
+  image: mongo
+  ports:
+  - "27017:27017"

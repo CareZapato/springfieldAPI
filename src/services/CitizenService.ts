@@ -2,12 +2,13 @@ import { MongoClient, MongoClientOptions } from 'mongodb';
 import express, { Request, Response } from 'express';
 import moment from 'moment';
 import { Citizen } from '../models/Citizen';
+import { Constants } from '../constants';
 
 
 export class CitizenService {
   //ruta de conexion bd
-  public url = 'mongodb://127.0.0.1:27017';
-  public router = express.Router();
+  public constants = new Constants;
+  public url = `mongodb://${this.constants.URLBASE_MONGO}:${this.constants.PORT_MONGO}`;
   // Parametros de inicialización de la conexión a la base de datos con MongoDB
   public options: MongoClientOptions = {
     useUnifiedTopology: true
@@ -26,8 +27,8 @@ export class CitizenService {
     console.log('[INFO][CitizenService] Servicio getAll');
     try {
       const client = await new MongoClient(this.url, this.options).connect();
-      const db = client.db('simpsons');
-      const citizens = await db.collection('characters').find().toArray();
+      const db = client.db(this.constants.DBNAME_MONGO);
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find().toArray();
       
       //QueryParams
 
@@ -138,12 +139,12 @@ export class CitizenService {
     console.log('[INFO][CitizenService] Servicio getCitizen');
     try {
       const client = await new MongoClient(this.url, this.options).connect();
-      const db = client.db('simpsons');
+      const db = client.db(this.constants.DBNAME_MONGO);
       
       //
       const filter = req.params.filter;
       // Esta busqueda compara con algunos campos del ciudadano
-      const citizens = await db.collection('characters').find({
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({
         $or: [
           { name: filter },
           { job: filter },
@@ -171,13 +172,13 @@ export class CitizenService {
     console.log('[INFO][CitizenService] Servicio markAsDeceased');
     try {
       const client = await new MongoClient(this.url, this.options).connect();
-      const db = client.db('simpsons');
+      const db = client.db(this.constants.DBNAME_MONGO);
 
       // Obtener el nombre del ciudadano a partir de la petición
       const name = req.params.name;
 
       // Actualizar el estado de isAlive a false en la base de datos
-      const updatedCitizen = await db.collection('characters').updateOne(
+      const updatedCitizen = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).updateOne(
         { name: name },
         { $set: { isAlive: false } }
       );
@@ -187,7 +188,7 @@ export class CitizenService {
       if(updatedCitizen.matchedCount>0){
 
         // Obtener los datos del ciudadano actualizado
-        const citizen = await db.collection('characters').find({ name: name }).toArray();
+        const citizen = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({ name: name }).toArray();
         message = updatedCitizen.modifiedCount == 1 ? 
         `Se ha confirmado el fallecimiento de ${citizen[0].name} ${citizen[0].lastName}` :
         `Ya se había inscrito a ${citizen[0].name} ${citizen[0].lastName} anteriormente en la funeraria Springfield`
@@ -215,13 +216,13 @@ export class CitizenService {
     try {
       // Conectarse a la base de datos
       const client = await new MongoClient(this.url, this.options).connect();
-      const db = client.db('simpsons');
+      const db = client.db(this.constants.DBNAME_MONGO);
 
       // Extraer los valores del ciudadano de la petición
       const citizen: Citizen = req.body;
 
       // Se verifica que no exista previamente en la BD
-      const citizens = await db.collection('characters').find({
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({
         $and: [
           { name: citizen.name },
           { lastName: citizen.lastName }
@@ -230,7 +231,7 @@ export class CitizenService {
       let message = '';
       if(citizens.length == 0){
         // Agregar el nuevo ciudadano a la base de datos
-        const result = await db.collection('characters').insertOne(citizen);
+        const result = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).insertOne(citizen);
 
         // Verificar si el ciudadano fue agregado exitosamente      
         if (result.insertedId) {

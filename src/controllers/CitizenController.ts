@@ -22,7 +22,5 @@ export class CitizenController {
     app.put(`${this.path}/citizens/markAsDeceased/:name`, this.citizenService.markAsDeceased);
     app.post(`${this.path}/citizens/addCitizen`, this.citizenService.addCitizen);
   }
-  
-  
 }
 
