@@ -3,12 +3,18 @@ import { Citizen } from '../models/Citizen';
 import { MongoClient, MongoClientOptions } from 'mongodb';
 import express, { Request, Response } from 'express';
 import moment from 'moment';
+import { Citizen } from '../models/Citizen';
+import { Constants } from '../constants';
 
 
 export class CitizenService {
-  public url = 'mongodb://127.0.0.1:27017';
-  public router = express.Router();
-  public ajusteEdad = 0;
+  //ruta de conexion bd
+  public constants = new Constants;
+  public url = `mongodb://${this.constants.URLBASE_MONGO}:${this.constants.PORT_MONGO}`;
+  // Parametros de inicialización de la conexión a la base de datos con MongoDB
+  public options: MongoClientOptions = {
+    useUnifiedTopology: true
+  } as MongoClientOptions;
 
   constructor(){
   }
@@ -19,9 +25,9 @@ export class CitizenService {
       useUnifiedTopology: true
     } as MongoClientOptions;
     try {
-      const client = await new MongoClient(this.url, options).connect();
-      const db = client.db('simpsons');
-      const citizens = await db.collection('characters').find().toArray();
+      const client = await new MongoClient(this.url, this.options).connect();
+      const db = client.db(this.constants.DBNAME_MONGO);
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find().toArray();
       
       //QueryParams
 
@@ -125,10 +131,13 @@ export class CitizenService {
       useUnifiedTopology: true
     } as MongoClientOptions;
     try {
-      const client = await new MongoClient(this.url, options).connect();
-      const db = client.db('simpsons');
+      const client = await new MongoClient(this.url, this.options).connect();
+      const db = client.db(this.constants.DBNAME_MONGO);
+      
+      //
       const filter = req.params.filter;
-      const citizens = await db.collection('characters').find({
+      // Esta busqueda compara con algunos campos del ciudadano
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({
         $or: [
           { name: filter },
           { job: filter },
@@ -144,6 +153,99 @@ export class CitizenService {
       console.error(error);
       res.status(500).send({ message: 'Error al consultar la base de datos' });
     }
+    console.log('[INFO][CitizenService] Fin Servicio getCitizen');
+  };
+
+  /**
+  setIsAlive es una función que se encarga de actualizar el estado de vida de un ciudadano en la base de datos.
+  Recibe como parámetro el nombre del ciudadano y actualiza su estado de vida en la base de datos a false.
+  Este servicio es accedido a través del método PUT y actualiza en tiempo real el estado de vida del ciudadano.
+  */
+  public markAsDeceased = async (req: Request, res: Response) => {
+    console.log('[INFO][CitizenService] Servicio markAsDeceased');
+    try {
+      const client = await new MongoClient(this.url, this.options).connect();
+      const db = client.db(this.constants.DBNAME_MONGO);
+
+      // Obtener el nombre del ciudadano a partir de la petición
+      const name = req.params.name;
+
+      // Actualizar el estado de isAlive a false en la base de datos
+      const updatedCitizen = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).updateOne(
+        { name: name },
+        { $set: { isAlive: false } }
+      );
+
+      // Mensaje para la respuesta
+      let message='';
+      if(updatedCitizen.matchedCount>0){
+
+        // Obtener los datos del ciudadano actualizado
+        const citizen = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({ name: name }).toArray();
+        message = updatedCitizen.modifiedCount == 1 ? 
+        `Se ha confirmado el fallecimiento de ${citizen[0].name} ${citizen[0].lastName}` :
+        `Ya se había inscrito a ${citizen[0].name} ${citizen[0].lastName} anteriormente en la funeraria Springfield`
+      }else{
+        message = `No se ha encontrado a ${req.params.name} dentro de los registros de springfield`;
+      }
+      res.send({ message: message});
+      client.close();
+    } catch (error) {
+      console.error('[ERROR][CitizenService] Servicio markAsDeceased',error);
+      res.status(500).send({ message: 'Error al actualizar el estado en la base de datos' });
+    }
+    console.log('[INFO][CitizenService] Fin Servicio markAsDeceased');
+  };
+
+  /**
+   * Este método permite agregar un nuevo ciudadano a la base de datos.
+   * Recibe un objeto JSON con los valores del ciudadano y los guarda en la base de datos.
+   * 
+   * @param req Petición HTTP que contiene el objeto JSON con los valores del ciudadano.
+   * @param res Respuesta HTTP que indica si la operación fue exitosa o no.
+   */
+  public addCitizen = async (req: Request, res: Response) => {
+    console.log('[INFO][CitizenService] Servicio addCitizen');
+    try {
+      // Conectarse a la base de datos
+      const client = await new MongoClient(this.url, this.options).connect();
+      const db = client.db(this.constants.DBNAME_MONGO);
+
+      // Extraer los valores del ciudadano de la petición
+      const citizen: Citizen = req.body;
+
+      // Se verifica que no exista previamente en la BD
+      const citizens = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).find({
+        $and: [
+          { name: citizen.name },
+          { lastName: citizen.lastName }
+        ]
+      }).toArray();
+      let message = '';
+      if(citizens.length == 0){
+        // Agregar el nuevo ciudadano a la base de datos
+        const result = await db.collection(this.constants.COLLECTIONS_SIMPSONS_MONGO).insertOne(citizen);
+
+        // Verificar si el ciudadano fue agregado exitosamente      
+        if (result.insertedId) {
+          message = `${citizen.name} ${citizen.lastName} ha sido agregado exitosamente a la base de datos.`;
+        } else {
+          message = `No se pudo agregar a ${citizen.name} ${citizen.lastName} a la base de datos.`;
+        }        
+      }else{
+        // Mensaje si el ciudadano ya estaba en la BD
+        message = `${citizen.name} ${citizen.lastName} ya esta previamente en la base de datos, No se agrega.`;
+      }
+      // Enviar la respuesta a la petición
+      res.send({ message: message });
+
+      // Cerrar la conexión con la base de datos
+      client.close();
+    } catch (error) {
+      console.error('[ERROR][CitizenService] Servicio addCitizen',error);
+      res.status(500).send({ message: 'Error al agregar el ciudadano a la base de datos.' });
+    }
+    console.log('[INFO][CitizenService] Fin Servicio addCitizen');
   };
 }
 

@@ -16,7 +16,5 @@ export class CitizenController {
     app.get(`${this.path}/:filter`, this.citizenService.getCitizen);
     console.log(`${this.path}/citizens`);
   }
-  
-  
 }
 
