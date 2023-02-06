@@ -54,8 +54,8 @@ La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manip
 
 | Método | Ruta | Descripción |
 | ------ | ---- | ----------- |
-| GET    | /citizens | Obtiene todos los ciudadanos registrados en la base de datos |
-| GET    | /citizens/:filter | Obtiene un ciudadano específico de la base de datos a través de un filtro |
-| PUT    | /citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
-| POST   | /citizens/addCitizen | Agrega un nuevo ciudadano a la base de datos |
+| GET    | /springfield/citizens | Obtiene todos los ciudadanos registrados en la base de datos |
+| GET    | /springfield/citizens/:filter | Obtiene un ciudadano específico de la base de datos a través de un filtro |
+| PUT    | /springfield/citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
+| POST   | /springfield/citizens/addCitizen | Agrega un nuevo ciudadano a la base de datos |
 
