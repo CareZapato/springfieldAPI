@@ -254,6 +254,16 @@ export class CitizenService {
     }
     console.log('[INFO][CitizenService] Fin Servicio addCitizen');
   };
+
+  /**
+   * Este servicio se encarga de dar el mensaje de presentacion al estar en la ruta host//springfield/
+   */
+  public main = async (req: Request, res: Response) => {
+    console.log('[INFO][CitizenService] Servicio main');
+      // Enviar la respuesta a la petición
+    res.send({ message: this.constants.MAIN_MESSAGE });
+    console.log('[INFO][CitizenService] Fin Servicio addCitizen');
+  }
 }
 
 
