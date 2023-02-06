@@ -11,7 +11,7 @@ RocketLab
 ## Desarrollador
 Developer: Pablo Barrera
 
-## Ejecución y configuración
+# Ejecución y configuración
 
 ### Ejecución desde local
 
@@ -63,7 +63,7 @@ Citizen = {
   isAlive: true
 };
 
-## Servicios
+# Servicios
 
 La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manipular la base de datos de ciudadanos de los Simpsons:
 
@@ -85,7 +85,7 @@ La rama `develop` es una rama de desarrollo, donde se realizan las pruebas y se 
 
 La rama `master` es la rama productiva, donde se encuentra la versión estable y segura del código.
 
-## Descarga de la Colección de Postman
+# Descarga de la Colección de Postman
 La colección de Postman está disponible para descargar desde el siguiente [link](<https://www.mediafire.com/file/hxqi5hgdglnt105/SpringfieldAPI.postman_collection.json/file>).
 
 
