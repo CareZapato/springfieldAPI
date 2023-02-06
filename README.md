@@ -68,3 +68,16 @@ La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manip
 | PUT    | /springfield/citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
 | POST   | /springfield/citizens/addCitizen | Agrega un nuevo ciudadano a la base de datos |
 
+# Branches en Git
+
+En este repositorio, se encuentran disponibles tres ramas: `main`, `develop` y `master`.
+
+La rama `main` es la rama por defecto que ofrece Github. Es la rama principal donde se realiza el mantenimiento y las mejoras del código.
+
+La rama `develop` es una rama de desarrollo, donde se realizan las pruebas y se integran los cambios antes de ser publicados en la rama `main`.
+
+La rama `master` es la rama productiva, donde se encuentra la versión estable y segura del código.
+
+
+
+
