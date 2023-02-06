@@ -3,6 +3,9 @@
 ## Descripción
 
 SpringfieldAPI es una base de datos que permite analizar la información de ciudadanos de los Simpsons. 
+Owner: Major Joe Quimby
+Enterprise: RocketLab
+developer: Pablo Barrera
 
 ## Ejecución y configuración
 
