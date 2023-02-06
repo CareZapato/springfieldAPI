@@ -1,10 +1,17 @@
-# SpringfieldAPI v.1.0
+# SpringfieldAPI v.1.0.0
 
-## Descripción
+SpringfieldAPI es una base de datos que permite analizar la información de ciudadanos de los Simpsons.
 
-SpringfieldAPI es una base de datos que permite analizar la información de ciudadanos de los Simpsons. 
+## Propiedad
+Owner: Mayor Joe Quimby
 
-## Ejecución y configuración
+## Enterprise 
+RocketLab
+
+## Desarrollador
+Developer: Pablo Barrera
+
+# Ejecución y configuración
 
 ### Ejecución desde local
 
@@ -56,14 +63,29 @@ Citizen = {
   isAlive: true
 };
 
-## Servicios
+# Servicios
 
 La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manipular la base de datos de ciudadanos de los Simpsons:
 
 | Método | Ruta | Descripción |
 | ------ | ---- | ----------- |
+| GET    | /springfield/ | Mensaje inicial de la API con el nombre, autor y fecha |
 | GET    | /springfield/citizens | Obtiene todos los ciudadanos registrados en la base de datos |
 | GET    | /springfield/citizens/:filter | Obtiene un ciudadano específico de la base de datos a través de un filtro |
 | PUT    | /springfield/citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
 | POST   | /springfield/citizens/addCitizen | Agrega un nuevo ciudadano a la base de datos |
+
+# Branches en Git
+
+En este repositorio, se encuentran disponibles tres ramas: `main`, `develop` y `master`.
+
+La rama `main` es la rama por defecto que ofrece Github. Es la rama principal donde se realiza el mantenimiento y las mejoras del código.
+
+La rama `develop` es una rama de desarrollo, donde se realizan las pruebas y se integran los cambios antes de ser publicados en la rama `main`.
+
+La rama `master` es la rama productiva, donde se encuentra la versión estable y segura del código.
+
+# Descarga de la Colección de Postman
+La colección de Postman está disponible para descargar desde el siguiente [link](<https://www.mediafire.com/file/hxqi5hgdglnt105/SpringfieldAPI.postman_collection.json/file>).
+
 
