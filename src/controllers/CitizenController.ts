@@ -17,6 +17,7 @@ export class CitizenController {
     app.use(bodyParser.urlencoded({ extended: true }))
 
     //se inicializan las rutas de nuestra API
+    app.get(`${this.path}/`, this.citizenService.main);
     app.get(`${this.path}/citizens`, this.citizenService.getAll);
     app.get(`${this.path}/citizens/:filter`, this.citizenService.getCitizen);
     app.put(`${this.path}/citizens/markAsDeceased/:name`, this.citizenService.markAsDeceased);
