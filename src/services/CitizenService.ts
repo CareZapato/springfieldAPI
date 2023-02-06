@@ -1,5 +1,3 @@
-import { CharacterModel } from '../models/citizen.model';
-import { Citizen } from '../models/Citizen';
 import { MongoClient, MongoClientOptions } from 'mongodb';
 import express, { Request, Response } from 'express';
 import moment from 'moment';
@@ -18,12 +16,15 @@ export class CitizenService {
 
   constructor(){
   }
-  
+
+  /**
+   * Funcion que retorna todos los ciudadanos en la base de datos que cumplan con los filtros especificados en los parametros de la consulta (queryParams).
+   * 
+   * @param {Request} req - La solicitud HTTP con los parametros de la consulta
+   * @param {Response} res - La respuesta HTTP con la lista filtrada de ciudadanos
+   */
   public getAll = async (req: Request, res: Response) => {
-    
-    const options: MongoClientOptions = {
-      useUnifiedTopology: true
-    } as MongoClientOptions;
+    console.log('[INFO][CitizenService] Servicio getAll');
     try {
       const client = await new MongoClient(this.url, this.options).connect();
       const db = client.db(this.constants.DBNAME_MONGO);
@@ -38,7 +39,7 @@ export class CitizenService {
       if (req.query.ageMin || req.query.ageMax) {
         filteredCitizens = filteredCitizens.filter(citizen => {
           const birthdate = moment(citizen.birthdate, "MM/DD/YYYY");
-          const age = moment().diff(birthdate, "years")-this.ajusteEdad;
+          const age = moment().diff(birthdate, "years");
           if (req.query.ageMin && age < parseInt(req.query.ageMin.toString())) {
             return false;
           }
@@ -49,19 +50,18 @@ export class CitizenService {
         });
       }
 
-      // el nombre
+      // nombre
       let name = '';
       if (req.query.name && typeof req.query.name === 'string') {
         name = req.query.name.toLowerCase();
       }
       if (name) {
         filteredCitizens = filteredCitizens.filter(citizen => {
-          console.log(citizen.name.toLowerCase()+" --- "+(name.toLowerCase()));
             return citizen.name.toLowerCase().includes(name.toLowerCase());
         });
       }
 
-      // el apellido
+      // apellido
       let lastName = '';
       if (req.query.lastName && typeof req.query.lastName === 'string') {
         lastName = req.query.lastName.toLowerCase();
@@ -83,7 +83,7 @@ export class CitizenService {
       if (req.query.isAdult) {
         filteredCitizens = filteredCitizens.filter(citizen => {
           const birthdate = moment(citizen.birthdate, "MM/DD/YYYY");
-          const age = moment().diff(birthdate, "years")-this.ajusteEdad;
+          const age = moment().diff(birthdate, "years");
     
           return age >= 18 === (req.query.isAdult === "true");
         });
@@ -118,18 +118,25 @@ export class CitizenService {
         });
       }
       
+      // Se envian al controlador los valores de los ciudadanos filtrados
       res.send(filteredCitizens);
       client.close();
     } catch (error) {
       console.error(error);
+      console.error('[ERROR][CitizenService] Servicio getAll',error);
       res.status(500).send({ message: 'Error al consultar la base de datos' });
     }
+    console.log('[INFO][CitizenService] Fin Servicio getAll');
   };
   
+  /**
+   * Método que obtiene los ciudadanos de la base de datos de acuerdo al filtro enviado en la petición.
+   * 
+   * @param req Objeto Request con la petición del usuario.
+   * @param res Objeto Response para enviar la respuesta al usuario.
+   */
   public getCitizen = async (req: Request, res: Response) => {
-    const options: MongoClientOptions = {
-      useUnifiedTopology: true
-    } as MongoClientOptions;
+    console.log('[INFO][CitizenService] Servicio getCitizen');
     try {
       const client = await new MongoClient(this.url, this.options).connect();
       const db = client.db(this.constants.DBNAME_MONGO);
@@ -141,16 +148,16 @@ export class CitizenService {
         $or: [
           { name: filter },
           { job: filter },
-          { catchPhrase: filter },
-          { age: filter }, 
           { gender: filter }, 
           { occupation: filter }
         ]
       }).toArray();
+      //se envian los ciudadanos filtrados
       res.send(citizens);
       client.close();
     } catch (error) {
       console.error(error);
+      console.error('[ERROR][CitizenService] Servicio getCitizen',error);
       res.status(500).send({ message: 'Error al consultar la base de datos' });
     }
     console.log('[INFO][CitizenService] Fin Servicio getCitizen');
