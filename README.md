@@ -62,6 +62,7 @@ La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manip
 
 | Método | Ruta | Descripción |
 | ------ | ---- | ----------- |
+| GET    | /springfield/ | Mensaje inicial de la API con el nombre, autor y fecha |
 | GET    | /springfield/citizens | Obtiene todos los ciudadanos registrados en la base de datos |
 | GET    | /springfield/citizens/:filter | Obtiene un ciudadano específico de la base de datos a través de un filtro |
 | PUT    | /springfield/citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
