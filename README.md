@@ -15,6 +15,14 @@ Para ejecutar SpringfieldAPI en su máquina local, siga los siguientes pasos:
 3. Instale las dependencias ejecutando `npm install`
 4. Ejecute la API con el comando `npm start`
 
+### Ejecución de Test Unitarios
+
+Esta API cuenta con test unitarios gestionados por la libreria Jest
+Para ejecutar los test SpringfieldAPI en su máquina local, siga los siguientes pasos:
+
+1. Abra una terminal en la carpeta raíz del proyecto
+2. Ejecute los test de la API con el comando `npm test`
+ 
 ### Docker
 
 Para levantar SpringfieldAPI en Docker, siga los siguientes pasos:
