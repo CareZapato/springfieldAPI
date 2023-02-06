@@ -47,3 +47,15 @@ Citizen = {
   job: 'Safety Inspector',
   isAlive: true
 };
+
+## Servicios
+
+La API SpringfieldAPI v.1.0 ofrece los siguientes servicios para acceder y manipular la base de datos de ciudadanos de los Simpsons:
+
+| Método | Ruta | Descripción |
+| ------ | ---- | ----------- |
+| GET    | /citizens | Obtiene todos los ciudadanos registrados en la base de datos |
+| GET    | /citizens/:filter | Obtiene un ciudadano específico de la base de datos a través de un filtro |
+| PUT    | /citizens/markAsDeceased/:name | Marca a un ciudadano como fallecido en la base de datos |
+| POST   | /citizens/addCitizen | Agrega un nuevo ciudadano a la base de datos |
+
